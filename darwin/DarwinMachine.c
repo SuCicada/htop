@@ -67,6 +67,16 @@ static void DarwinMachine_getVMStats(vm_statistics_t p) {
    }
 }
 
+#if defined(__arm64__)
+static void DarwinMachine_getVMStats64(vm_statistics64_t p) {
+   mach_msg_type_number_t info_size = HOST_VM_INFO64_COUNT;
+
+   if (host_statistics64(mach_host_self(), HOST_VM_INFO64, (host_info_t) p, &info_size) != 0) {
+      CRT_fatalError("Unable to retrieve VM statistics64");
+   }
+}
+#endif
+
 void Machine_scan(Machine* super) {
    DarwinMachine* host = (DarwinMachine*) super;
 
@@ -75,6 +85,9 @@ void Machine_scan(Machine* super) {
    host->prev_load = host->curr_load;
    DarwinMachine_allocateCPULoadInfo(&host->curr_load);
    DarwinMachine_getVMStats(&host->vm_stats);
+#if defined(__arm64__)
+   DarwinMachine_getVMStats64(&host->vm_stats64);
+#endif
    openzfs_sysctl_updateArcStats(&host->zfs);
 }
 
@@ -92,6 +105,9 @@ Machine* Machine_new(UsersTable* usersTable, uid_t userId) {
 
    /* Initialize the VM statistics */
    DarwinMachine_getVMStats(&this->vm_stats);
+#if defined(__arm64__)
+   DarwinMachine_getVMStats64(&this->vm_stats64);
+#endif
 
    /* Initialize the ZFS kstats, if zfs.kext loaded */
    openzfs_sysctl_init(&this->zfs);
