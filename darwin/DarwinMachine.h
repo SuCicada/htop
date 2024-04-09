@@ -18,10 +18,7 @@ typedef struct DarwinMachine_ {
    Machine super;
 
    host_basic_info_data_t host_info;
-   vm_statistics_data_t vm_stats;
-#if defined(__arm64__)
    vm_statistics64_data_t vm_stats64;
-#endif
    processor_cpu_load_info_t prev_load;
    processor_cpu_load_info_t curr_load;
 
