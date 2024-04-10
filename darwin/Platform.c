@@ -290,14 +290,15 @@ double Platform_setCPUValues(Meter* mtr, unsigned int cpu) {
    return CLAMP(total, 0.0, 100.0);
 }
 
-void Platform_setMemoryValues(Meter *mtr) {
-   const DarwinMachine *dhost = (const DarwinMachine *) mtr->host;
+void Platform_setMemoryValues(Meter* mtr) {
+   const DarwinMachine* dhost = (const DarwinMachine*) mtr->host;
 #if defined(__LP64__)
-   const struct vm_statistics64 *vm = &dhost->vm_stats64;
+   const struct vm_statistics64* vm = &dhost->vm_stats;
 #else
    const struct vm_statistics* vm = &dhost->vm_stats;
 #endif
    double page_K = (double)vm_page_size / (double)1024;
+
    mtr->total = dhost->host_info.max_mem / 1024;
 #if defined(__LP64__)
    natural_t used = vm->active_count + vm->inactive_count +
