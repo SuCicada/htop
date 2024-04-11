@@ -60,7 +60,7 @@ static unsigned DarwinMachine_allocateCPULoadInfo(processor_cpu_load_info_t* p) 
 }
 
 static void DarwinMachine_getVMStats(DarwinMachine* this) {
-#if defined(__LP64__)
+#ifdef HAVE_VM_STATISTICS64
    mach_msg_type_number_t info_size = HOST_VM_INFO64_COUNT;
 
    if (host_statistics64(mach_host_self(), HOST_VM_INFO64, (host_info_t)&this->vm_stats, &info_size) != 0) {

@@ -18,7 +18,7 @@ typedef struct DarwinMachine_ {
    Machine super;
 
    host_basic_info_data_t host_info;
-#if defined(__LP64__)
+#ifdef HAVE_VM_STATISTICS64
    vm_statistics64_data_t vm_stats;
 #else
    vm_statistics_data_t vm_stats;
