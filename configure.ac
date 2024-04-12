@@ -331,20 +331,9 @@ if test "$my_htop_platform" = darwin; then
    AC_CHECK_DECLS([IOMainPort], [], [], [[#include <IOKit/IOKitLib.h>]])
    AC_CHECK_DECLS([IOMasterPort], [], [], [[#include <IOKit/IOKitLib.h>]])
 
-   AC_MSG_CHECKING([for vm_statistics64 supported])
-   AC_COMPILE_IFELSE([
-      AC_LANG_PROGRAM([[
-#include <mach/mach_host.h>
-#include <mach/vm_statistics.h>
-      ]], [[
-            mach_msg_type_number_t info_size = HOST_VM_INFO64_COUNT;
-            vm_statistics64_data_t vm_stat;
-            host_statistics64(mach_host_self(), HOST_VM_INFO64, (host_info64_t)&vm_stat, &info_size);
-      ]]
-   )],
-   AC_DEFINE([HAVE_VM_STATISTICS64], 1, [The vm_statistics64 features is supported.])
-   AC_MSG_RESULT(yes),
-   AC_MSG_RESULT(no))
+   AC_CHECK_FUNCS([host_statistics64], [
+      AC_CHECK_TYPES([struct vm_statistics64], [], [], [[#include <mach/vm_statistics.h>]])
+   ], [], [[#include <mach/mach.h>]])
 fi
 
 if test "$my_htop_platform" = pcp; then
